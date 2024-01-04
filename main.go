@@ -6,15 +6,20 @@ import (
 	"os"
 
 	ghart "github.com/anshulkanwar/gh-art"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
 
-	router.POST("/art", generateArt)
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	router.Use(cors.New(config))
 
-	router.Run("localhost:8080")
+	router.POST("/generate", generateArt)
+
+	router.Run()
 }
 
 func generateArt(c *gin.Context) {
