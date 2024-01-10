@@ -26,9 +26,14 @@ func main() {
 }
 
 func generate(c *gin.Context) {
-	var points []ghart.Point
+	var data struct {
+		Config ghart.Config
+		Art []ghart.Point
+	}
 
-	if err := c.BindJSON(&points); err != nil {
+	if err := c.BindJSON(&data); err != nil {
+		fmt.Println(err)
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "an error occured"})
 		return
 	}
 
@@ -42,7 +47,7 @@ func generate(c *gin.Context) {
 		return
 	}
 
-	if err := ghart.GenerateArt(points, dir); err != nil {
+	if err := ghart.GenerateArt(data.Art, data.Config, dir); err != nil {
 		fmt.Println(err)
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "an error occured"})
 		return
